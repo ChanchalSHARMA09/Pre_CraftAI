@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftAI Project Presentation</title>
+    <!-- Load Tailwind CSS for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Poppins (Headings) and Inter (Body) Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- 
+    ==================================================
+    CSS STYLING BLOCK (SIMULATING A SEPARATE style.css)
+    ================================================== 
+    -->
+    <style>
+        /* CSS Variables for theme consistency - ELEGANT PALETTE */
+        :root {
+            --primary-color: #5c9cf2; /* Softer Blue */
+            --secondary-color: #00c4a7; /* Elegant Cyan/Green */
+            --glass-bg: rgba(255, 255, 255, 0.06); /* Slightly less opaque */
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif; /* Body font */
+            background: linear-gradient(135deg, #181c24 0%, #000000 100%); /* Richer, darker background */
+            color: #e5e7eb;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Presentation Container & Slide Transitions */
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1); /* Smoother cubic transition */
+        }
+
+        .slide {
+            flex: 0 0 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 3rem;
+            box-sizing: border-box;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            min-height: 100vh;
+            
+            /* Initial state for entrance animation (Slide/Fade) */
+            opacity: 0;
+            transform: scale(0.98); /* Less aggressive scale */
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Progress Bar */
+        #progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 6px; /* Slightly thicker */
+            background-color: var(--secondary-color);
+            width: 0%;
+            transition: width 0.4s ease-in-out;
+            z-index: 20;
+            box-shadow: 0 0 12px var(--secondary-color);
+        }
+        
+        /* Glass Panel Styling (Core Aesthetic) */
+        .glass-panel {
+            background: var(--glass-bg); 
+            backdrop-filter: blur(18px); /* Increased blur for depth */
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Slightly stronger border */
+            box-shadow: 0 15px 50px 0 rgba(0, 0, 0, 0.8); /* Deeper, more diffused shadow */
+            padding: 2.5rem 3.5rem;
+            width: 100%;
+            max-width: 95%; 
+            height: auto;
+            max-height: 95vh; 
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* Headings & Hover Effects */
+        .glass-panel h1, .glass-panel h2 {
+            font-family: 'Poppins', sans-serif; /* Headings font */
+        }
+        
+        .glass-panel h2 {
+            font-size: 2rem; /* Reduced for compactness */
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.4rem;
+            letter-spacing: 0.03em;
+            flex-shrink: 0; 
+            transition: color 0.2s;
+        }
+        .glass-panel h2:hover {
+            color: #ffffff; 
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .glass-panel h3 {
+            font-size: 1.1rem; /* Reduced for compactness */
+            font-weight: 600;
+            margin-top: 0.8rem;
+            margin-bottom: 0.4rem;
+            color: var(--secondary-color);
+            transition: color 0.2s;
+        }
+        .glass-panel h3:hover {
+            color: var(--primary-color);
+        }
+
+        /* Lists & Typography */
+        .glass-panel ul {
+            list-style: disc;
+            margin-left: 1.25rem; /* Reduced margin */
+            padding-left: 0.5rem;
+            font-size: 0.85rem; /* Reduced for compactness */
+        }
+        .glass-panel li {
+            margin-bottom: 0.3rem; /* Reduced margin */
+            line-height: 1.4;
+            transition: color 0.2s;
+        }
+        .glass-panel li:hover {
+            color: var(--primary-color);
+            transform: translateX(3px);
+        }
+
+        /* Navigation Buttons */
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(92, 156, 242, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 0.9rem 1.2rem;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+            z-index: 10;
+        }
+
+        .nav-button:hover {
+            background: rgba(92, 156, 242, 0.8);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        #prev-button { left: 2rem; }
+        #next-button { right: 2rem; }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .glass-panel h2 {
+                font-size: 1.4rem;
+                margin-bottom: 0.6rem;
+            }
+            .slide { padding: 0.5rem 0.2rem; } /* Reduced overall padding */
+            .glass-panel { padding: 1rem; max-width: 98%; }
+            .glass-panel ul, .glass-panel p, .flow-step, .tech-stack-label, .tech-stack-value { font-size: 0.8rem; } /* Further reduced text on mobile */
+            
+            /* Nav button repositioning for mobile */
+            #prev-button { left: 0.25rem; padding: 0.4rem 0.6rem; font-size: 1rem; }
+            #next-button { right: 0.25rem; padding: 0.4rem 0.6rem; font-size: 1rem; }
+        }
+
+        /* Content Scroll Area */
+        .slide-content {
+            overflow-y: auto;
+            padding-right: 0.5rem; /* Reduced for compactness */
+            flex-grow: 1; 
+        }
+
+        /* Entrance Animation for Content (Fade Up) */
+        @keyframes slideUpFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Apply staggered animation only to the active slide's animated content */
+        .slide.active .content-animated > * {
+            opacity: 0;
+            animation: slideUpFadeIn 0.5s ease-out forwards;
+        }
+
+        /* Staggered Delay Implementation */
+        .slide.active .content-animated > *:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .content-animated > *:nth-child(2) { animation-delay: 0.15s; }
+        .slide.active .content-animated > *:nth-child(3) { animation-delay: 0.2s; }
+        .slide.active .content-animated > *:nth-child(4) { animation-delay: 0.25s; }
+        .slide.active .content-animated > *:nth-child(5) { animation-delay: 0.3s; }
+        .slide.active .content-animated > *:nth-child(6) { animation-delay: 0.35s; }
+        .slide.active .content-animated > *:nth-child(7) { animation-delay: 0.4s; }
+
+        /* Flowchart Styling for improved look */
+        .flow-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.2rem; /* Reduced padding */
+            min-height: 3rem; /* Reduced minimum height */
+            margin: 0.5rem 0; /* Reduced vertical margin */
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.85rem; /* Consistent font size */
+            line-height: 1.3;
+        }
+        .flow-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(92, 156, 242, 0.7);
+        }
+        .flow-process { background-color: rgba(92, 156, 242, 0.3); border-color: var(--primary-color); } 
+        .flow-data { background-color: rgba(0, 196, 167, 0.3); border-color: var(--secondary-color); } 
+        .flow-start-end { background-color: rgba(255, 193, 7, 0.3); border-color: #ffc107; }
+        .flow-arrow { 
+            font-size: 1.5rem; /* Reduced arrow size */
+            text-align: center; 
+            margin: 0.1rem 0;
+            color: var(--secondary-color);
+            transition: color 0.2s;
+        }
+        .flow-arrow:hover {
+            color: var(--primary-color);
+        }
+        .professional-table th, .professional-table td {
+            padding: 0.4rem 0.6rem; /* Reduced table padding */
+            font-size: 0.85rem;
+        }
+        /* Specific styling for the Tech Stack grid on Slide 7 */
+        .tech-stack-grid {
+            display: grid;
+            grid-template-columns: 40% 60%; /* Label takes 40%, Value takes 60% */
+            gap: 0.5rem 1rem;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+        .tech-stack-label {
+            font-weight: 700;
+            color: var(--blue-400); /* Adjusted styling */
+            padding-right: 0.5rem;
+            text-align: right;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+        }
+        .tech-stack-value {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Indicator Bar -->
+    <div id="progress-bar"></div>
+
+    <!-- Navigation Buttons with ARIA for Accessibility -->
+    <button id="prev-button" class="nav-button" aria-label="Previous Slide">←</button>
+    <button id="next-button" class="nav-button" aria-label="Next Slide">→</button>
+
+    <div class="presentation-container" id="presentation-container" role="presentation">
+
+        <!-- SLIDE 1: TITLE SLIDE -->
+        <section class="slide" id="slide-1" role="presentation">
+            <div class="glass-panel text-center flex items-center justify-center">
+                <div class="content-animated">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 md:mb-4 text-white tracking-wider" style="font-family: 'Poppins', sans-serif;">CraftAI</h1>
+                    <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light mb-6 md:mb-8 text-blue-300" style="font-family: 'Poppins', sans-serif;">AI-Powered Marketplace Assistant</h2>
+                    <p class="text-sm md:text-lg lg:text-xl mb-6 font-light italic text-white/80">Empowering Artisans and Bridging Traditional Craftsmanship with the Digital Economy</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8 mt-6 md:mt-10 text-xs md:text-sm max-w-2xl mx-auto">
+                        <div class="p-2 rounded-lg bg-white/10 border border-blue-500/30">
+                            <strong class="text-blue-400">Department:</strong> CSE
+                        </div>
+                        <div class="p-2 rounded-lg bg-white/10 border border-blue-500/30">
+                            <strong class="text-blue-400">Mentor:</strong> Vaishali Deshwal
+                        </div>
+                    </div>
+                    <div class="text-xs md:text-base mt-3 md:mt-5">
+                        <strong class="text-blue-400">Presented By:</strong> Aditya Verma, Anurag Sharma, Chanchal Sharma, Divyanshu Singh
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: INTRODUCTION OF TEAM & PROJECT -->
+        <section class="slide" id="slide-2" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl text-blue-400">Our Visionaries: Team Roles and Project Introduction</h2>
+                <div class="slide-content mt-4 space-y-4 md:space-y-6 content-animated">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                        <div class="p-3 bg-white/10 rounded-xl border border-green-500/30">
+                            <h3 class="text-base md:text-lg font-bold mb-2">Team Structure & Roles</h3>
+                            <ul class="list-none space-y-2 text-xs md:text-sm">
+                                <li><strong>Aditya Verma:</strong> <strong>AI/ML Lead</strong> (Designing and fine-tuning multilingual Large Language Models.)</li>
+                                <li><strong>Anurag Sharma:</strong> <strong>Full-Stack Developer</strong> (Building backend logic, APIs, and database infrastructure.)</li>
+                                <li><strong>Chanchal Sharma:</strong> <strong>UI/UX & Frontend Lead</strong> (Leads design for the intuitive, artisan-friendly user interface.)</li>
+                                <li><strong>Divyanshu Singh:</strong> <strong>Project & Data Lead</strong> (Oversees timelines, data architecture, and success metrics.)</li>
+                            </ul>
+                        </div>
+                        <div class="p-3 bg-white/10 rounded-xl border border-green-500/30">
+                            <h3 class="text-base md:text-lg font-bold mb-2">Project Overview</h3>
+                            <ul class="text-xs md:text-sm">
+                                <li><strong>What is CraftAI?</strong> A digital platform combining a community marketplace with generative AI tools.</li>
+                                <li><strong>Our Mission:</strong> To democratize e-commerce for traditional artisans by eliminating the major barrier: <strong>professional digital content creation</strong>.</li>
+                                <li><strong>Key Innovation:</strong> Providing instant, high-quality, culturally relevant marketing copy in <strong>English</strong> and local languages (<strong>Hindi</strong>).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-info">Slide 2 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: PROBLEM STATEMENT -->
+        <section class="slide" id="slide-3" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl text-red-400">The Artisan’s Digital Dilemma: Why Craftsmanship Gets Lost Online</h2>
+                <div class="slide-content mt-4 space-y-4 md:space-y-5 text-sm md:text-lg content-animated">
+                    <h3 class="text-base md:text-lg text-red-300">Key Challenges Facing Artisans</h3>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-xs md:text-sm">
+                        <li class="font-semibold"><strong>1. The Content Gap (Critical):</strong> Difficulty creating professional product descriptions due to language proficiency limits.</li>
+                        <li><strong>2. High E-Commerce Barrier:</strong> Lack of technical skills leads to dependence on intermediaries, severely reducing profit margins.</li>
+                        <li><strong>3. Time and Resource Drain:</strong> Manual content drafting diverts valuable time away from the actual craft.</li>
+                        <li><strong>4. Limited Market Reach:</strong> Products struggle for visibility without professional, story-driven content.</li>
+                    </ul>
+                    <hr class="border-blue-400/50 my-3 md:my-4">
+                    <h3 class="text-base md:text-lg text-blue-300">The Opportunity: Bridging the Gap</h3>
+                    <p class="text-sm md:text-base text-center font-semibold mt-3 md:mt-4 p-2 md:p-3 bg-white/10 rounded-xl border border-blue-500/50">
+                        The solution must simplify market entry by automating the translation of the artisan's craft and heritage into effective digital commerce language.
+                    </p>
+                </div>
+                <div class="footer-info">Slide 3 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: OBJECTIVES -->
+        <section class="slide" id="slide-4" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl">Core Objectives: Revolutionizing the Artisan’s Digital Journey</h2>
+                <div class="slide-content mt-4 space-y-4 md:space-y-6 content-animated">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                        <div class="p-3 bg-white/10 rounded-xl border border-blue-500/30">
+                            <h3 class="text-base md:text-lg">1. Empowerment & Accessibility</h3>
+                            <ul class="text-xs md:text-sm">
+                                <li>Goal: Democratize e-commerce access via a simple platform.</li>
+                                <li>Metric: Reduce product listing time by **50%** vs. manual efforts.</li>
+                            </ul>
+                        </div>
+                        <div class="p-3 bg-white/10 rounded-xl border border-blue-500/30">
+                            <h3 class="text-base md:text-lg">2. Content Quality & Multilingual Reach</h3>
+                            <ul class="text-xs md:text-sm">
+                                <li>Goal: Use Generative AI for professional, high-impact content.</li>
+                                <li>Metric: Ensure seamless content generation in **English** and **Hindi**.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                        <div class="p-3 bg-white/10 rounded-xl border border-blue-500/30">
+                            <h3 class="text-base md:text-lg">3. Centralized Marketplace Development</h3>
+                            <ul class="text-xs md:text-sm">
+                                <li>Goal: Establish a dedicated community marketplace for ethical consumers.</li>
+                                <li>Metric: Implement core e-commerce functions (listing, image management, pricing).</li>
+                            </ul>
+                        </div>
+                        <div class="p-3 bg-white/10 rounded-xl border border-blue-500/30">
+                            <h3 class="text-base md:text-lg">4. Scalability & Adoption</h3>
+                            <ul class="text-xs md:text-sm">
+                                <li>Goal: Design a robust, serverless architecture (Netlify) for efficient scaling.</li>
+                                <li>Metric: Maintain a highly intuitive platform for users with minimal technical literacy.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-info">Slide 4 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: LITERATURE SURVEY / BACKGROUND -->
+        <section class="slide" id="slide-5" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl">Market & Technology Landscape: Current Gaps and Our Opportunity</h2>
+                <div class="slide-content mt-4 space-y-4 md:space-y-5 content-animated">
+                    <h3 class="text-base md:text-lg text-red-300">Limitations of Current E-Commerce Solutions</h3>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-xs md:text-sm">
+                        <li><strong>Dominance:</strong> Large platforms impose high commissions and unfavorable terms.</li>
+                        <li><strong>Traditional AI:</strong> Focused narrowly on back-end tasks (forecasting, logistics), neglecting direct seller content assistance.</li>
+                        <li><strong>Linguistic Exclusion:</strong> Most tools are English-centric, hindering inclusion for non-English-speaking artisans.</li>
+                        <li><strong>Digital Literacy:</strong> Artisans lack familiarity with complex tools and advanced digital marketing strategies.</li>
+                    </ul>
+                    <h3 class="text-base md:text-lg text-blue-300">The Gap & The Opportunity (Visual Representation)</h3>
+                    <div class="p-2 md:p-3 bg-white/10 rounded-lg border border-white/20">
+                        <table class="professional-table w-full text-left border-collapse text-xs md:text-sm">
+                            <thead>
+                                <tr class="border-b-2 border-green-400">
+                                    <th class="p-2 font-bold text-blue-300">Area</th>
+                                    <th class="p-2 font-bold text-red-300">The Gap (Problem)</th>
+                                    <th class="p-2 font-bold text-green-300">The Opportunity (CraftAI's Focus)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-white/10">
+                                    <td class="p-2"><strong>Generative AI</strong></td>
+                                    <td class="p-2">No multilingual, heritage-driven content at the micro-entrepreneur level.</td>
+                                    <td class="p-2"><strong>The AI Assistant:</strong> Provides culturally resonant marketing copy as a first line of support.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2"><strong>Marketplace</strong></td>
+                                    <td class="p-2">No ethical platform structure solving the content problem first.</td>
+                                    <td class="p-2"><strong>The Community Platform:</strong> A low-cost, story-focused model valuing the artisan's narrative.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer-info">Slide 5 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: PROPOSED APPROACH -->
+        <section class="slide" id="slide-6" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl">Solution Architecture: Generative AI and the Decoupled Marketplace</h2>
+                <div class="slide-content mt-4 space-y-4 md:space-y-6 content-animated">
+                    <h3 class="text-base md:text-lg text-blue-300">Core Idea: Data In → AI-Powered Content → Marketplace Listing</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 text-xs md:text-sm">
+                        <div class="p-3 bg-white/10 rounded-xl border border-white/20">
+                            <strong class="text-blue-400 text-base md:text-lg">1. Generative AI Core</strong>
+                            <p>Multilingual Content Suite (Descriptions, Posts, Stories). <strong>Impact:</strong> Saves time and ensures quality storytelling.</p>
+                        </div>
+                        <div class="p-3 bg-white/10 rounded-xl border border-white/20">
+                            <strong class="text-blue-400 text-base md:text-lg">2. Marketplace Platform</strong>
+                            <p>Streamlined Listing Flow with one-click publishing. <strong>Impact:</strong> Lowers technical barriers and increases seller adoption.</p>
+                        </div>
+                        <div class="p-3 bg-white/10 rounded-xl border border-white/20">
+                            <strong class="text-blue-400 text-base md:text-lg">3. Multimodal Input</strong>
+                            <p>Processes product photos to inform and enrich generated text. <strong>Impact:</strong> Ensures content is accurate and relevant to the product.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-base md:text-lg mt-3">Expected Outcome</h3>
+                    <ul class="list-disc text-xs md:text-sm ml-4">
+                        <li><strong>For the Artisan:</strong> Increased income, stronger brand recognition, and reduced administrative load.</li>
+                        <li><strong>For the Consumer:</strong> Access to a trusted source for authentic, ethically sourced handmade goods.</li>
+                    </ul>
+                </div>
+                <div class="footer-info">Slide 6 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: REQUIREMENTS & METHODOLOGY -->
+        <section class="slide" id="slide-7" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl">Technical Blueprint: Tools and Development Methodology</h2>
+                <div class="slide-content mt-4 space-y-3 md:space-y-4 content-animated">
+                    <h3 class="text-base md:text-lg text-green-300">Technology Stack</h3>
+                    
+                    <!-- NEW, IMPROVED TECH STACK GRID -->
+                    <div class="tech-stack-grid text-xs md:text-sm">
+                        <div class="tech-stack-label text-blue-400">AI Models:</div> <div class="tech-stack-value">Generative AI APIs (e.g., GPT-4/Gemini)</div>
+                        <div class="tech-stack-label text-blue-400">Languages:</div> <div class="tech-stack-value">JavaScript, Python</div>
+                        <div class="tech-stack-label text-blue-400">Frontend:</div> <div class="tech-stack-value">React / Vue.js, Tailwind CSS</div>
+                        <div class="tech-stack-label text-blue-400">Backend/Hosting:</div> <div class="tech-stack-value">Netlify, Serverless Functions</div>
+                        <div class="tech-stack-label text-blue-400">Database:</div> <div class="tech-stack-value">MongoDB / Firestore (NoSQL)</div>
+                        <div class="tech-stack-label text-blue-400">Design Tools:</div> <div class="tech-stack-value">Figma / Adobe XD</div>
+                    </div>
+                    
+                    <h3 class="text-base md:text-lg mt-3 md:mt-4 text-green-300">Agile Methodology Steps</h3>
+                    <ul class="list-disc text-xs md:text-sm ml-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                        <li><strong>Discovery & Design:</strong> Defined user journey and UI/UX specifications.</li>
+                        <li><strong>AI Core Development:</strong> Refined prompt engineering for quality and multilingual support.</li>
+                        <li><strong>Marketplace Development:</strong> Built database schema and core product management (CRUD).</li>
+                        <li><strong>Testing & Integration:</strong> Conducted Alpha Testing for usability and feedback.</li>
+                        <li><strong>Deployment:</strong> Launched the stable Minimum Viable Product (MVP) on Netlify.</li>
+                    </ul>
+                </div>
+                <div class="footer-info">Slide 7 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: FLOWCHART -->
+        <section class="slide" id="slide-8" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl">System Flowchart – The AI-Powered Content Workflow</h2>
+                <div class="slide-content mt-4 flex flex-col items-center justify-start space-y-1 content-animated">
+                    <h3 class="text-base md:text-lg text-blue-300 mb-2">From Raw Craft to Professional Content (Visual Flow)</h3>
+                    
+                    <!-- Flowchart containers updated for uniform size (w-full max-w-lg) and consistent centering -->
+                    <div class="flow-step flow-start-end w-full max-w-lg text-xs md:text-sm">START: Artisan Signs In & Selects Tool</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-step flow-data w-full max-w-lg text-xs md:text-sm">INPUT: Product Details, Photo (Optional), Target Language (English/Hindi)</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-step flow-process w-full max-w-lg text-xs md:text-sm">PROCESS: Serverless Function calls <strong>LLM API</strong> with Context & Prompt</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-step flow-data w-full max-w-lg text-xs md:text-sm">OUTPUT: AI Engine returns professional <strong>Content Draft</strong></div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-step flow-process w-full max-w-lg text-xs md:text-sm">DECISION: Artisan <strong>Reviews & Edits</strong> (Human Oversight)</div>
+                    <div class="flow-arrow">↓</div>
+                    <div class="flow-step flow-start-end w-full max-w-lg text-xs md:text-sm">END: Content Saved to Database & <strong>Published to Marketplace</strong></div>
+                    
+                </div>
+                <div class="footer-info">Slide 8 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 9: RESULTS -->
+        <section class="slide" id="slide-9" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl">Results and Achievements 🏆</h2>
+                <div class="slide-content mt-4 space-y-4 md:space-y-6 content-animated">
+                    <h3 class="text-base md:text-lg text-green-300">Key Achievements & Outcomes</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 text-xs md:text-sm">
+                        <ul class="list-disc space-y-2">
+                            <li><strong>Functional AI Suite:</strong> All four content tools successfully generating production-ready copy.</li>
+                            <li><strong>Multilingual Capability:</strong> Proven content generation in <strong>English and Hindi</strong>.</li>
+                            <li><strong>Architecture:</strong> MVP deployed on <strong>Netlify</strong> using a reliable Serverless architecture.</li>
+                            <li><strong>Core E-commerce:</strong> Full CRUD operations for product listing and marketplace viewing implemented.</li>
+                        </ul>
+                        <div class="p-3 bg-white/10 rounded-xl text-center flex flex-col justify-center border border-white/20">
+                            <h4 class="text-base md:text-lg font-bold text-blue-400 mb-2">Efficiency Gain: Time Saved</h4>
+                            <p class="text-lg md:text-xl font-extrabold mb-3 text-white">From 30+ minutes to under 60 seconds.</p>
+                            <p class="text-xs md:text-sm">Time required to generate professional, multi-platform content.</p>
+                        </div>
+                    </div>
+                    <h3 class="text-base md:text-lg mt-3 md:mt-4 text-yellow-300">Visual of AI Content Generator UI (Screenshot Representation)</h3>
+                    <div class="p-3 bg-gray-800/60 rounded-lg border-l-4 border-yellow-400 text-xs md:text-sm">
+                        <p class="font-bold mb-1">Tool:</p><p class="mb-1">Social Media Post Creator</p>
+                        <p class="font-bold mb-1">Input:</p><p class="mb-1">"Traditional Rajasthani Puppet, Wood, Blue/Red color"</p>
+                        <p class="font-bold mb-1">Output (Hindi):</p><p class="italic text-yellow-300">"🧵 हर धागे में कहानी ✨! इस पारंपरिक कठपुतली कला को देखिए... #IndianCrafts #RajasthaniArt #CraftAI"</p>
+                    </div>
+                </div>
+                <div class="footer-info">Slide 9 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 10: CONCLUSION -->
+        <section class="slide" id="slide-10" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl">Conclusion: Crafting the Future of Artisan Commerce</h2>
+                <div class="slide-content mt-4 space-y-4 md:space-y-6 content-animated">
+                    <h3 class="text-base md:text-lg text-blue-300">Project Summary: The Core Achievement</h3>
+                    <ul class="list-disc text-xs md:text-sm ml-4">
+                        <li><strong>Solution:</strong> A scalable, AI-powered content and marketplace platform was successfully developed.</li>
+                        <li><strong>Problem Solved:</strong> Eliminated the barrier of affordable, multilingual, professional marketing content for traditional artisans.</li>
+                        <li><strong>Innovation:</strong> Successfully integrated Generative AI to produce culturally resonant copy in English and Hindi.</li>
+                    </ul>
+                    <h3 class="text-base md:text-lg mt-3 md:mt-4 text-green-300">Social and Economic Impact</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 text-xs md:text-sm">
+                        <p class="p-3 bg-white/10 rounded-lg border-l-4 border-green-400"><strong>Financial Empowerment:</strong> Enables artisans to bypass costly middlemen and retain higher profit margins.</p>
+                        <p class="p-3 bg-white/10 rounded-lg border-l-4 border-green-400"><strong>Cultural Preservation:</strong> Ensures the unique heritage of the craft is accurately and compellingly communicated to a global audience.</p>
+                    </div>
+                </div>
+                <div class="footer-info">Slide 10 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 11: FUTURE WORK -->
+        <section class="slide" id="slide-11" role="presentation">
+            <div class="glass-panel">
+                <h2 class="text-2xl md:text-3xl">Future Work & Roadmap 🗺️</h2>
+                <div class="slide-content mt-4 space-y-4 md:space-y-6 content-animated">
+                    <h3 class="text-base md:text-lg text-blue-300">Phase II: Core AI and Data Expansion (Next 6-12 Months)</h3>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-xs md:text-sm">
+                        <li class="p-3 bg-white/10 rounded-lg border border-blue-500/30"><strong>Multimodal Content Generation:</strong> Use Computer Vision to generate descriptions directly from photos.</li>
+                        <li class="p-3 bg-white/10 rounded-lg border border-blue-500/30"><strong>Advanced Sales Analytics:</strong> Implement ML for demand forecasting and optimal pricing advice.</li>
+                        <li class="p-3 bg-white/10 rounded-lg border border-blue-500/30"><strong>Regional Language Depth:</strong> Expand language support beyond Hindi (e.g., Tamil, Marathi).</li>
+                    </ul>
+
+                    <h3 class="text-base md:text-lg mt-3 md:mt-4 text-blue-300">Phase III: Marketplace Evolution (Long-Term Strategy)</h3>
+                    <ul class="list-disc text-xs md:text-sm ml-4">
+                        <li><strong>Integrated Logistics Solution:</strong> Partner with 3PLs for automated, low-cost shipping directly in the app.</li>
+                        <li><strong>Conversational Commerce Bot:</strong> Deploy an AI chatbot for instant customer inquiry handling.</li>
+                        <li><strong>Community Tools:</strong> Build features for artisan collaboration and feedback sharing.</li>
+                    </ul>
+                </div>
+                <div class="footer-info">Slide 11 of 12</div>
+            </div>
+        </section>
+
+        <!-- SLIDE 12: QUESTIONNAIRE -->
+        <section class="slide" id="slide-12" role="presentation">
+            <div class="glass-panel text-center flex items-center justify-center">
+                <div class="content-animated">
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-6 md:mb-8 text-blue-400" style="font-family: 'Poppins', sans-serif;">THANK YOU</h1>
+                    <h2 class="text-2xl md:text-3xl font-light mb-6 md:mb-8 text-white/90" style="font-family: 'Poppins', sans-serif;">Building the Future of Craft Commerce</h2>
+
+                    <h3 class="text-xl md:text-2xl font-semibold mb-3 text-green-300">We Are Ready for Your Questions!</h3>
+
+                    <p class="text-sm md:text-base mt-3 md:mt-5"><strong>Live Prototype URL:</strong></p>
+                    <p class="text-xs md:text-sm text-blue-300 font-mono italic">https://craft-ai-app.netlify.app/</p>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5 max-w-3xl mx-auto text-xs md:text-sm">
+                        <p class="font-semibold text-blue-200">Aditya Verma</p>
+                        <p class="font-semibold text-blue-200">Anurag Sharma</p>
+                        <p class="font-semibold text-blue-200">Chanchal Sharma</p>
+                        <p class="font-semibold text-blue-200">Divyanshu Singh</p>
+                    </div>
+                </div>
+                <div class="footer-info">Slide 12 of 12</div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 
+    ========================================================
+    JAVASCRIPT LOGIC BLOCK (SIMULATING A SEPARATE script.js)
+    ======================================================== 
+    -->
+    <script>
+        // DOM Elements
+        const container = document.getElementById('presentation-container');
+        const slides = document.querySelectorAll('.slide');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        
+        // State variables
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+
+        /**
+         * Updates the slide display, navigation state, and progress bar.
+         */
+        function updateSlide() {
+            // 1. Horizontal Slide Transformation
+            const offset = -currentSlide * 100;
+            container.style.transform = `translateX(${offset}vw)`;
+
+            // 2. Active Class Management (for fade/zoom transition)
+            slides.forEach((slide, index) => {
+                // Ensure only one slide is active at a time
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            // 3. Update Progress Bar
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // 4. Update Navigation Button Visibility
+            prevButton.style.display = currentSlide === 0 ? 'none' : 'block';
+            nextButton.style.display = currentSlide === totalSlides - 1 ? 'none' : 'block';
+            
+            // 5. Update Footer Info
+            document.querySelectorAll('.footer-info').forEach(el => {
+                el.textContent = `Slide ${currentSlide + 1} of ${totalSlides}`;
+            });
+        }
+
+        /**
+         * Handles advancing to the next slide.
+         */
+        const goToNextSlide = () => {
+             // Reset animation state briefly before transition for re-triggering entrance animation
+            slides[currentSlide].classList.remove('active');
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                setTimeout(updateSlide, 10); // Short delay for visual smoothness
+            } else {
+                updateSlide();
+            }
+        };
+        
+        /**
+         * Handles moving to the previous slide.
+         */
+        const goToPrevSlide = () => {
+             // Reset animation state briefly before transition
+            slides[currentSlide].classList.remove('active');
+            if (currentSlide > 0) {
+                currentSlide--;
+                 setTimeout(updateSlide, 10); // Short delay for visual smoothness
+            } else {
+                updateSlide();
+            }
+        };
+
+        // Event listeners for navigation buttons
+        nextButton.addEventListener('click', goToNextSlide);
+        prevButton.addEventListener('click', goToPrevSlide);
+
+        // Keyboard navigation control (Arrow keys and Spacebar)
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight' || event.key === ' ' || event.key === 'Enter') {
+                goToNextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                goToPrevSlide();
+            }
+        });
+
+        // Initialize the presentation on load
+        window.onload = updateSlide; 
+    </script>
+</body>
+</html>
